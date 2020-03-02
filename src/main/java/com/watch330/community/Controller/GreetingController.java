@@ -1,4 +1,4 @@
-package com.watch330.community.HelloController;
+package com.watch330.community.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
