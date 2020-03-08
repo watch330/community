@@ -1,5 +1,6 @@
 package com.watch330.community.dto;
 
+/*存储github用户信息的实体*/
 public class GithubUser {
     private String name;
     private Long id;
