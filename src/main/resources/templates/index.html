@@ -27,7 +27,7 @@
                     <button type="submit" class="btn btn-default">搜索</button>
                 </form>
                 <ul class="nav navbar-nav">
-                    <li><a class="btn" href="#"><span
+                    <li><a class="btn" href="/"><span
                             class="glyphicon glyphicon-menu-hamburger"></span><span>  发现</span></a></li>
                     <li><a class="btn" href="#"><span class="glyphicon glyphicon-book"></span><span>  文章</span></a></li>
                 </ul>
@@ -60,21 +60,71 @@
         <div class="row">
             <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 radius-row-left">
                 <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 发现</h2>
-                <hr/>
+                <hr id="top-hr"/>
 
-                <div class="media" th:each="question : ${questions}">
-                    <div class="media-left">
-                        <a href="#" style="text-decoration: none">
-                            <img class="media-object img-rounded"
-                                 th:src="${question.user.avatarUrl}">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading" th:text="${question.title}"></h4>
-                        <span class="article-status"><span th:text="${question.commentCount}"></span>个回复 · <span
-                                th:text="${question.viewCount}"></span> 次浏览 · <span th:text="${#dates.format(question.gmtCreate,'MM月dd日')}"></span></span>
+                <div class="media" th:each="question : ${pageInfo.getList()}">
+                    <div>
+                        <div class="media-left">
+                            <a href="#" style="text-decoration: none">
+                                <img class="media-object img-rounded"
+                                     th:src="${question.user.avatarUrl}">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading" th:text="${question.title}"></h4>
+                            <span class="article-status"><span th:text="${question.commentCount}"></span>个回复 · <span
+                                    th:text="${question.viewCount}"></span> 次浏览 · <span
+                                    th:text="${#dates.format(question.gmtCreate,'MM月dd日')}"></span></span>
+                        </div>
+                        <hr id="inter-hr">
                     </div>
                 </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li th:class="${pageInfo.isFirstPage}?'disabled'" th:switch="${pageInfo.isFirstPage}">
+                            <a th:case="false" th:href="@{/(pageNum=1)}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                            <a th:case="true" th:attr="pointer-events='none'" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li th:class="${pageInfo.isFirstPage}?'disabled'" th:switch="${pageInfo.isFirstPage}">
+                            <a th:case="false" th:href="@{/(pageNum=${pageInfo.getPrePage()})}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&lsaquo;</span>
+                            </a>
+                            <a th:case="true" th:attr="pointer-events='none'" aria-label="Previous">
+                                <span aria-hidden="true">&lsaquo;</span>
+                            </a>
+                        </li>
+                        <li th:each="page : ${pageInfo.getNavigatepageNums()}"
+                            th:class="${page==pageInfo.getPageNum()}?'active':''">
+                            <a th:href="@{/(pageNum=${page})}" th:text="${page}">
+
+                            </a>
+                        </li>
+                        <li th:class="${pageInfo.isLastPage}?'disabled'" th:switch="${pageInfo.isLastPage}">
+                            <a th:case="false" th:href="@{/(pageNum=${pageInfo.getNextPage()})}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&rsaquo;</span>
+                            </a>
+                            <a th:case="true" th:attr="pointer-events='none'" aria-label="Next">
+                                <span aria-hidden="true">&rsaquo;</span>
+                            </a>
+                        </li>
+                        <li th:class="${pageInfo.isLastPage}?'disabled'" th:switch="${pageInfo.isLastPage}">
+                            <a th:case="false" th:href="@{/(pageNum=${pageInfo.getPages()})}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                            <a th:case="true" th:attr="pointer-events='none'" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
             <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 radius-row-right">
                 <h3>热门话题</h3>

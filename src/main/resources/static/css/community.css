@@ -2,8 +2,12 @@
     margin: 0;
     padding: 0;
 }
-hr {
-    margin-top: 0;
+#top-hr {
+    border-top: 2px solid #eee;
+}
+
+#inter-hr {
+    margin-top: 10px;
 }
 .main {
     margin: 30px;
@@ -53,20 +57,14 @@ body {
     background-color: white;
 }
 
-.form-group {
-    border-bottom: 2px solid #adadad;
-    position: relative;
-    margin: 30px 0;
+.media {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
 }
+.pagination {
+    float: right;
+}
+/*.media hr {*/
 
-.form-group input {
-    font-size: 15px;
-    color: #333;
-    border: none;
-    width: 100%;
-    outline: none;
-    background: none;
-    padding: 0 5px;
-    height: 40px;
-    box-shadow: none;
-}
+/*}*/

@@ -1,9 +1,7 @@
 package com.watch330.community.Controller;
 
-import com.watch330.community.dto.QuestionDTO;
-import com.watch330.community.mapper.QuestionMapper;
+import com.github.pagehelper.PageInfo;
 import com.watch330.community.mapper.UserMapper;
-import com.watch330.community.model.Question;
 import com.watch330.community.model.User;
 import com.watch330.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,10 @@ public class GreetingController {
 
     @GetMapping("/")
     public String greeting(HttpServletRequest request,
-                           Model model) {
+                           Model model,
+                           @RequestParam(name = "pageNum", defaultValue = "1") Integer pageNum
+
+    ) {
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
@@ -43,8 +44,9 @@ public class GreetingController {
             }
         }
 
-        List<QuestionDTO> questionList = questionService.list();
-        model.addAttribute("questions",questionList);
+        Integer pageSize = 10;
+        PageInfo pageInfo = questionService.list(pageNum, pageSize);
+        model.addAttribute("pageInfo", pageInfo);
         return "index";
     }
 }
