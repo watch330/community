@@ -7,6 +7,7 @@ import com.watch330.community.mapper.QuestionMapper;
 import com.watch330.community.mapper.UserMapper;
 import com.watch330.community.model.Question;
 import com.watch330.community.model.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,26 +24,31 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
 
-    public PageInfo list(Integer pageNum, Integer pageSize) {
-        if (pageNum <= 0)
-            pageNum = 1;
+    public PageInfo getAllList(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Question> questions = questionMapper.getQuestionList();
-        PageInfo tempPageInfo = new PageInfo<>(questions,7);
-        if (tempPageInfo.getSize()==0) {
-            tempPageInfo = list(tempPageInfo.getPages(), pageSize);
-            return tempPageInfo;
-        }
+        return getPageInfo(questions);
+    }
+
+    public PageInfo getListByUserId(Integer pageNum, Integer pageSize, String id) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Question> questions = questionMapper.getByUserId(id);
+        return getPageInfo(questions);
+    }
+
+    @NotNull
+    private PageInfo getPageInfo(List<Question> questions) {
+        PageInfo tempPageInfo = new PageInfo<>(questions, 7);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);
+            BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
         PageInfo pageInfo = new PageInfo<>(questionDTOList);
-        BeanUtils.copyProperties(tempPageInfo,pageInfo,"list");
+        BeanUtils.copyProperties(tempPageInfo, pageInfo, "list");
         return pageInfo;
     }
 }
