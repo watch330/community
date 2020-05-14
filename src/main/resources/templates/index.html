@@ -8,74 +8,29 @@
     <link rel="stylesheet" href="css/community.css"/>
     <script src="js/jquery-3.4.1.min.js" type="application/javascript"></script>
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <script th:replace="common/pageNavi :: nav-script (${path})"></script>
+
 </head>
 <body>
 
-    <header th:insert="navigation :: nav-bar"></header>
+<header th:insert="common/navigation :: nav-bar"></header>
 
-    <div class="container-fluid main ">
-        <div class="row">
-            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 radius-row-left">
-                <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 发现</h2>
-                <hr id="top-hr"/>
 
-                <div class="media" th:each="question : ${pageInfo.getList()}">
-                    <div>
-                        <div class="media-left">
-                            <a href="#" style="text-decoration: none">
-                                <img class="media-object img-rounded"
-                                     th:src="${question.user.avatarUrl}">
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="media-heading" th:text="${question.title}"></h4>
-                            <span class="article-status"><span th:text="${question.commentCount}"></span>个回复 · <span
-                                    th:text="${question.viewCount}"></span> 次浏览 · <span
-                                    th:text="${#dates.format(question.gmtCreate,'MM月dd日')}"></span></span>
-                        </div>
-                        <hr id="inter-hr">
-                    </div>
-                </div>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <li th:if="${pageInfo.getNavigateFirstPage()!=1}">
-                            <a th:href="@{/(pageNum=1)}"
-                               aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li th:if="${!pageInfo.isFirstPage}">
-                            <a th:href="@{/(pageNum=${pageInfo.getPrePage()})}"
-                               aria-label="Previous">
-                                <span aria-hidden="true">&lsaquo;</span>
-                            </a>
-                        </li>
-                        <li th:each="page : ${pageInfo.getNavigatepageNums()}"
-                            th:class="${page==pageInfo.getPageNum()}?'active':''">
-                            <a th:href="@{/(pageNum=${page})}" th:text="${page}">
+<div class="container-fluid main ">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 radius-row-left">
+            <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 发现</h2>
+            <hr id="top-hr"/>
 
-                            </a>
-                        </li>
-                        <li th:if="${!pageInfo.isLastPage}" >
-                            <a th:href="@{/(pageNum=${pageInfo.getNextPage()})}"
-                               aria-label="Next">
-                                <span aria-hidden="true">&rsaquo;</span>
-                            </a>
-                        </li>
-                        <li th:if="${pageInfo.getNavigateLastPage()!=pageInfo.getPages()}">
-                            <a th:href="@{/(pageNum=${pageInfo.getPages()})}"
-                               aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 radius-row-right">
-                <h3>热门话题</h3>
-            </div>
+            <div th:replace="common/pageNavi :: meadia-list"></div>
+            <nav th:replace="common/pageNavi :: page-nav"></nav>
+
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 radius-row-right">
+            <h3>热门话题</h3>
         </div>
     </div>
+</div>
 </body>
 
 </html>

@@ -1,18 +1,19 @@
 package com.watch330.community.Controller;
 
 import com.watch330.community.mapper.QuestionMapper;
-import com.watch330.community.mapper.UserMapper;
 import com.watch330.community.model.Question;
 import com.watch330.community.model.User;
+import com.watch330.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import java.util.Objects;
 
 @Controller
@@ -22,10 +23,25 @@ public class PublishController {
     private QuestionMapper questionMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private QuestionService questionService;
 
     @GetMapping("/publish")
     public String publish() {
+        return "publish";
+    }
+
+    @GetMapping("/publish/{id}")
+    public String modifyQuestion(Model model, @PathVariable Integer id,
+                                 HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        Question question = questionMapper.findById(id);
+        if (!Objects.equals(user.getAccountId(), question.getCreator()))
+            return "index";
+        model.addAttribute("title", question.getTitle());
+        model.addAttribute("description", question.getDescription());
+        model.addAttribute("tag", question.getTag());
+        request.getSession().setAttribute("questionEditId", id);
+
         return "publish";
     }
 
@@ -38,37 +54,25 @@ public class PublishController {
             Model model
     ) {
 
-        model.addAttribute("title",title);
-        model.addAttribute("description",description);
-        model.addAttribute("tag",tag);
+        model.addAttribute("title", title);
+        model.addAttribute("description", description);
+        model.addAttribute("tag", tag);
 
-        if(title == null || Objects.equals(title, "")){
-            model.addAttribute("error","标题不能为空");
+        if (title == null || Objects.equals(title, "")) {
+            model.addAttribute("error", "标题不能为空");
             return "publish";
         }
-        if(description == null || Objects.equals(description, "")){
-            model.addAttribute("error","问题描述不能为空");
+        if (description == null || Objects.equals(description, "")) {
+            model.addAttribute("error", "问题描述不能为空");
             return "publish";
         }
-        if(tag == null || Objects.equals(tag, "")){
-            model.addAttribute("error","标签不能为空");
+        if (tag == null || Objects.equals(tag, "")) {
+            model.addAttribute("error", "标签不能为空");
             return "publish";
         }
 
-        User user = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-        }
+        User user = (User) request.getSession().getAttribute("user");
+
         if (user == null) {
             model.addAttribute("error", "用户未登录");
             return "publish";
@@ -79,10 +83,22 @@ public class PublishController {
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getAccountId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
 
-        questionMapper.create(question);
+
+       if( questionService.createOrUpdate(question,(Integer)request.getSession().getAttribute("questionEditId")))
+           request.getSession().setAttribute("questionEditId",null);
+
         return "redirect:/";
     }
+
+
+//    @PostMapping("/publish/{id}")
+//    public String updateQuestion(@PathVariable Integer id,
+//                                 @RequestParam("title") String title,
+//                                 @RequestParam("description") String description,
+//                                 @RequestParam("tag") String tag){
+//        questionMapper.updateQuestion(id,title,description,tag);
+//        return "redirect:/question/" + id;
+//    }
+
 }

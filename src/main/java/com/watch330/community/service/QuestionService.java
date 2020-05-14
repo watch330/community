@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,5 +51,31 @@ public class QuestionService {
         PageInfo pageInfo = new PageInfo<>(questionDTOList);
         BeanUtils.copyProperties(tempPageInfo, pageInfo, "list");
         return pageInfo;
+    }
+
+    public QuestionDTO findById(Integer id) {
+        Question question = questionMapper.findById(id);
+        if (question==null){
+            return null;
+        }
+        User user= userMapper.findById(question.getCreator());
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question,questionDTO);
+        questionDTO.setUser(user);
+
+        return questionDTO;
+    }
+
+    public boolean createOrUpdate(Question question, Integer editId) {
+
+        if(editId!=null){
+            questionMapper.updateQuestion(editId,question.getTitle(),question.getDescription(),question.getTag(),System.currentTimeMillis());
+            return true;
+        }else{
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.create(question);
+            return false;
+        }
     }
 }

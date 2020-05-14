@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>springboot demo</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../../static/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="../../static/css/community.css"/>
+    <script src="../../static/js/jquery-3.4.1.min.js" type="application/javascript"></script>
+    <script src="../../static/js/bootstrap.min.js" type="application/javascript"></script>
+    <script type="text/javascript" th:inline="javascript" th:fragment="nav-script (path)">
+        function nav(index) {
+
+            var path= [[${path}]];
+            $.ajax({
+                url: path,
+                type: "post",
+                data: {"pageNum": index},
+                dataType: "html",
+                success: function (data) {
+
+                    $("body").html(data);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="media" th:each="question : ${pageInfo.getList()}" th:fragment="meadia-list">
+    <div>
+        <div class="media-left">
+            <a href="#" style="text-decoration: none">
+                <img class="media-object img-rounded"
+                     th:src="${question.user.avatarUrl}">
+            </a>
+        </div>
+        <div class="media-body">
+            <h4 class="media-heading">
+                <a th:href="@{'question/'+${question.getId()}}"  th:text="${question.title}" style="text-decoration: none"></a>
+            </h4>
+            <span class="article-status"><span th:text="${question.commentCount}"></span>个回复 · <span
+                    th:text="${question.viewCount}"></span> 次浏览 · <span
+                    th:text="${#dates.format(question.gmtCreate,'MM月dd日')}"></span></span>
+        </div>
+        <hr id="inter-hr">
+    </div>
+</div>
+
+<nav aria-label="Page navigation" th:fragment="page-nav">
+    <ul class="pagination">
+        <li th:if="${pageInfo.getNavigateFirstPage()!=1}">
+            <a onclick="nav(1)"
+               aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li th:if="${!pageInfo.isFirstPage}">
+            <a th:onclick="'javascript:nav('+${pageInfo.getPrePage()}+')'"
+               aria-label="Previous">
+                <span aria-hidden="true">&lsaquo;</span>
+            </a>
+        </li>
+        <li th:each="page : ${pageInfo.getNavigatepageNums()}"
+            th:class="${page==pageInfo.getPageNum()}?'active':''">
+            <a href="javascript:;" th:onclick="'javascript:nav('+${page}+')'"
+
+               th:text="${page}">
+
+            </a>
+        </li>
+        <li th:if="${!pageInfo.isLastPage}">
+            <a th:onclick="'javascript:nav('+${pageInfo.getNextPage()}+')'"
+
+               aria-label="Next">
+                <span aria-hidden="true">&rsaquo;</span>
+            </a>
+        </li>
+        <li th:if="${pageInfo.getNavigateLastPage()!=pageInfo.getPages()}">
+            <a th:onclick="'javascript:nav('+${pageInfo.getPages()}+')'"
+
+               aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+</body>
+</html>

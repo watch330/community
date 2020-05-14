@@ -1,12 +1,7 @@
 package com.watch330.community.mapper;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
 import com.watch330.community.model.Question;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,4 +17,10 @@ public interface QuestionMapper {
 
     @Select("select * from question where creator=#{id}")
     List<Question> getByUserId(@Param("id") String  id);
+
+    @Select("select * from question where id=#{id}")
+    Question findById(@Param("id") Integer id);
+
+    @Update("update question set title=#{title}, description=#{description}, tag=#{tag}, gmt_modified=#{time} where id = #{editId}")
+    public void updateQuestion(@Param("editId") Integer id, @Param("title") String title, @Param("description") String description, @Param("tag") String tag,@Param("time") Long time);
 }
