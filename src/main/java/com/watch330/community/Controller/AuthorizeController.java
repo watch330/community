@@ -2,7 +2,6 @@ package com.watch330.community.Controller;
 
 import com.watch330.community.dto.AccessTokenDTO;
 import com.watch330.community.dto.GithubUser;
-import com.watch330.community.model.User;
 import com.watch330.community.provider.GithubProvider;
 import com.watch330.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 /*获取github授权*/

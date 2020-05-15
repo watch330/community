@@ -7,6 +7,7 @@ import com.watch330.community.mapper.QuestionMapper;
 import com.watch330.community.mapper.UserMapper;
 import com.watch330.community.model.Question;
 import com.watch330.community.model.User;
+import com.watch330.community.model.UserExample;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +43,13 @@ public class QuestionService {
         PageInfo tempPageInfo = new PageInfo<>(questions, 7);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            UserExample userExample = new UserExample();
+            userExample.createCriteria()
+                    .andAccountIdEqualTo(question.getCreator());
+            List<User> users = userMapper.selectByExample(userExample);
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
-            questionDTO.setUser(user);
+            questionDTO.setUser(users.get(0));
             questionDTOList.add(questionDTO);
         }
         PageInfo pageInfo = new PageInfo<>(questionDTOList);
@@ -58,10 +62,13 @@ public class QuestionService {
         if (question==null){
             return null;
         }
-        User user= userMapper.findById(question.getCreator());
+        UserExample userExample = new UserExample();
+        userExample.createCriteria()
+                .andAccountIdEqualTo(question.getCreator());
+        List<User> users = userMapper.selectByExample(userExample);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
-        questionDTO.setUser(user);
+        questionDTO.setUser(users.get(0));
 
         return questionDTO;
     }

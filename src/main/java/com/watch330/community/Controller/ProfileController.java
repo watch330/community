@@ -1,7 +1,6 @@
 package com.watch330.community.Controller;
 
 import com.github.pagehelper.PageInfo;
-import com.watch330.community.mapper.UserMapper;
 import com.watch330.community.model.User;
 import com.watch330.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
