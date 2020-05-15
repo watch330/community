@@ -33,7 +33,7 @@ public class PublishController {
     public String modifyQuestion(Model model, @PathVariable Integer id,
                                  HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
-        Question question = questionMapper.findById(id);
+        Question question = questionMapper.selectByPrimaryKey(id);
         if (!Objects.equals(user.getAccountId(), question.getCreator()))
             return "index";
         model.addAttribute("title", question.getTitle());

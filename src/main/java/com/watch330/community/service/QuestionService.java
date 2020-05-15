@@ -6,6 +6,7 @@ import com.watch330.community.dto.QuestionDTO;
 import com.watch330.community.mapper.QuestionMapper;
 import com.watch330.community.mapper.UserMapper;
 import com.watch330.community.model.Question;
+import com.watch330.community.model.QuestionExample;
 import com.watch330.community.model.User;
 import com.watch330.community.model.UserExample;
 import org.jetbrains.annotations.NotNull;
@@ -27,14 +28,19 @@ public class QuestionService {
     private QuestionMapper questionMapper;
 
     public PageInfo getAllList(Integer pageNum, Integer pageSize) {
+        QuestionExample questionExample = new QuestionExample();
         PageHelper.startPage(pageNum, pageSize);
-        List<Question> questions = questionMapper.getQuestionList();
+        List<Question> questions = questionMapper.selectByExample(questionExample);
         return getPageInfo(questions);
     }
 
     public PageInfo getListByUserId(Integer pageNum, Integer pageSize, String id) {
+        //使用example设置查询条件
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria().andCreatorEqualTo(id);
+
         PageHelper.startPage(pageNum, pageSize);
-        List<Question> questions = questionMapper.getByUserId(id);
+        List<Question> questions = questionMapper.selectByExample(questionExample);
         return getPageInfo(questions);
     }
 
@@ -58,7 +64,7 @@ public class QuestionService {
     }
 
     public QuestionDTO findById(Integer id) {
-        Question question = questionMapper.findById(id);
+        Question question = questionMapper.selectByPrimaryKey(id);
         if (question==null){
             return null;
         }
@@ -76,12 +82,21 @@ public class QuestionService {
     public boolean createOrUpdate(Question question, Integer editId) {
 
         if(editId!=null){
-            questionMapper.updateQuestion(editId,question.getTitle(),question.getDescription(),question.getTag(),System.currentTimeMillis());
+            Question updateQuestion = new Question();
+            updateQuestion.setTitle(question.getTitle());
+            updateQuestion.setDescription(question.getDescription());
+            updateQuestion.setTag(question.getTag());
+            updateQuestion.setGmtModified(System.currentTimeMillis());
+
+            QuestionExample questionExample = new QuestionExample();
+            questionExample.createCriteria().andIdEqualTo(editId);
+
+            questionMapper.updateByExampleSelective(updateQuestion,questionExample);
             return true;
         }else{
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
-            questionMapper.create(question);
+            questionMapper.insert(question);
             return false;
         }
     }
