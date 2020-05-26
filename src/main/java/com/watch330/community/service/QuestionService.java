@@ -3,6 +3,9 @@ package com.watch330.community.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.watch330.community.dto.QuestionDTO;
+import com.watch330.community.exception.CustomizeException;
+import com.watch330.community.exception.ErrorCode;
+import com.watch330.community.mapper.QuestionExtMapper;
 import com.watch330.community.mapper.QuestionMapper;
 import com.watch330.community.mapper.UserMapper;
 import com.watch330.community.model.Question;
@@ -14,7 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,15 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
 
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
+    /**
+     * 获得所有问题的分页.
+     *
+     * @param pageNum  页数
+     * @param pageSize 每页的记录数
+     * @return 分页信息
+     */
     public PageInfo getAllList(Integer pageNum, Integer pageSize) {
         QuestionExample questionExample = new QuestionExample();
         PageHelper.startPage(pageNum, pageSize);
@@ -34,6 +45,14 @@ public class QuestionService {
         return getPageInfo(questions);
     }
 
+    /**
+     * 根据用户ID, 获得该用户提出的问题分页.
+     *
+     * @param pageNum  页数
+     * @param pageSize 每页的记录数
+     * @param id       用户ID
+     * @return
+     */
     public PageInfo getListByUserId(Integer pageNum, Integer pageSize, String id) {
         //使用example设置查询条件
         QuestionExample questionExample = new QuestionExample();
@@ -63,25 +82,38 @@ public class QuestionService {
         return pageInfo;
     }
 
-    public QuestionDTO findById(Integer id) {
+    /**
+     * 根据问题ID查找问题
+     *
+     * @param id 问题ID
+     * @return 问题信息
+     */
+    public QuestionDTO findById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
-        if (question==null){
-            return null;
+        if (question == null) {
+            throw new CustomizeException(ErrorCode.QUESTION_NOT_FOUND);
         }
         UserExample userExample = new UserExample();
         userExample.createCriteria()
                 .andAccountIdEqualTo(question.getCreator());
         List<User> users = userMapper.selectByExample(userExample);
         QuestionDTO questionDTO = new QuestionDTO();
-        BeanUtils.copyProperties(question,questionDTO);
+        BeanUtils.copyProperties(question, questionDTO);
         questionDTO.setUser(users.get(0));
 
         return questionDTO;
     }
 
-    public boolean createOrUpdate(Question question, Integer editId) {
+    /**
+     * 插入或者更新问题
+     *
+     * @param question 该插入或修改的问题
+     * @param editId   需要修改的问题的ID, 可为空
+     * @return 是否插入或修改
+     */
+    public boolean createOrUpdate(Question question, Long editId) {
 
-        if(editId!=null){
+        if (editId != null) {
             Question updateQuestion = new Question();
             updateQuestion.setTitle(question.getTitle());
             updateQuestion.setDescription(question.getDescription());
@@ -91,13 +123,23 @@ public class QuestionService {
             QuestionExample questionExample = new QuestionExample();
             questionExample.createCriteria().andIdEqualTo(editId);
 
-            questionMapper.updateByExampleSelective(updateQuestion,questionExample);
+            int isUpdate = questionMapper.updateByExampleSelective(updateQuestion, questionExample);
+            if (isUpdate != 1) {
+                throw new CustomizeException(ErrorCode.QUESTION_NOT_FOUND);
+            }
             return true;
-        }else{
+        } else {
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
-            questionMapper.insert(question);
+            int isInsert = questionMapper.insertSelective(question);
+            if (isInsert != 1) {
+                throw new CustomizeException(ErrorCode.QUESTION_NOT_FOUND);
+            }
             return false;
         }
+    }
+
+    public void increView(Long id) {
+        questionExtMapper.incView(id);
     }
 }

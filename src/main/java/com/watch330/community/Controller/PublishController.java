@@ -30,7 +30,7 @@ public class PublishController {
     }
 
     @GetMapping("/publish/{id}")
-    public String modifyQuestion(Model model, @PathVariable Integer id,
+    public String modifyQuestion(Model model, @PathVariable Long id,
                                  HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         Question question = questionMapper.selectByPrimaryKey(id);
@@ -84,7 +84,7 @@ public class PublishController {
         question.setCreator(user.getAccountId());
 
 
-       if( questionService.createOrUpdate(question,(Integer)request.getSession().getAttribute("questionEditId")))
+       if( questionService.createOrUpdate(question,(Long) request.getSession().getAttribute("questionEditId")))
            request.getSession().setAttribute("questionEditId",null);
 
         return "redirect:/";
