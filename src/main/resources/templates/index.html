@@ -9,7 +9,16 @@
     <script src="js/jquery-3.4.1.min.js" type="application/javascript"></script>
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
     <script th:replace="common/pageNavi :: nav-script (${path})"></script>
-
+    <script type="application/javascript">
+        window.onload=function () {
+            var closeable = window.localStorage.getItem("closeable");
+            if(closeable=="true"){
+                window.localStorage.setItem("loginDone",true);
+                window.close();
+                window.localStorage.removeItem("closeable");
+            }
+        }
+    </script>
 
 </head>
 <body>

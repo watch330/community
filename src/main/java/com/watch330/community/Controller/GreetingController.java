@@ -47,4 +47,9 @@ public class GreetingController {
 
         return modelAndView;
     }
+
+    @RequestMapping("/NaviBarUpdate")
+    public String updateNaviBar(){
+        return "NaviBarUpdate";
+    }
 }

@@ -87,7 +87,82 @@ body {
 .question-status {
     display: flex;
     justify-content: flex-end;
+    align-content: center;
 
+}
+
+.comment-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.comment-foot {
+    font-size: 13px;
+    font-weight: normal;
+    color: #999;
+    font-family: candara,candara,"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","WenQuanYi Micro Hei","Microsoft Yahei";
+}
+.comment-btn {
+    margin-right: 15px;
+    display: inline-block;
+    block-size: content-box;
+    color:#999;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(243, 243, 243, 0.92);
+
+}
+
+.comment-btn a {
+    display: inline-block;
+    padding: 5px 10px;
+    color: #999;
+}
+
+.comment-btn a:hover {
+    color:#ffffff;
+}
+
+.comment-btn:hover{
+    cursor: pointer;
+    background-color: #1496bd;
+}
+
+.comment-btn:hover a{
+    color:#ffffff;
+}
+
+.comment-btn-active{
+    cursor: pointer;
+    background-color: #1496bd;
+    border-radius: 5px;
+}
+
+.comment-btn-active .comment-btn-content {
+    display: inline-block;
+    padding: 5px 10px;
+    color:#ffffff;
+}
+
+.comment-time-bar {
+    font-size: 13px;
+    font-weight: normal;
+    color: #999;
+    font-family: candara,candara,"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","WenQuanYi Micro Hei","Microsoft Yahei";
+}
+
+.second-comment-list {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    margin:20px auto 0 auto;
+    padding: 0;
+}
+
+.comment-foot {
+    padding-left: 50px;
 }
 /*.media hr {*/
 

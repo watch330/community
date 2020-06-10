@@ -51,7 +51,7 @@ public class AuthorizeController {
         if (githubUser != null && githubUser.getId() != null) {
             userService.loginInsertOrUpdate(githubUser,token);
             Cookie cookie = new Cookie("token", token);
-            cookie.setMaxAge(459200);
+            cookie.setMaxAge(4592000);
             response.addCookie(cookie);
             return "redirect:/";
         } else {

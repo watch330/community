@@ -25,4 +25,10 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
+    <update id="decComment" parameterType="com.watch330.community.model.Question">
+        update question
+        set comment_count = comment_count - #{commentCount,jdbcType=INTEGER}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
 </mapper>
