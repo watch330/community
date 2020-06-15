@@ -31,4 +31,13 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
+    <select id="selectRelated" parameterType="com.watch330.community.model.Question"
+            resultMap="BaseResultMap">
+
+        select *
+        from question
+        where id != #{id,jdbcType=BIGINT}
+          and tag regexp #{tag}
+        limit 10
+    </select>
 </mapper>

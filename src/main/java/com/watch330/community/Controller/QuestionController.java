@@ -27,7 +27,9 @@ public class QuestionController {
                            Model model) {
         QuestionDTO questionDTO = questionService.findById(id);
         questionService.increView(id);
+        List<QuestionDTO> relatedQuestions = questionService.selectRelated(questionDTO);
         model.addAttribute("question", questionDTO);
+        model.addAttribute("relatedQuestions",relatedQuestions);
 
         List<ShowCommentDTO> list = commentService.getCommentList(id,CommentType.QUESTION);
         model.addAttribute("fistComment",list);

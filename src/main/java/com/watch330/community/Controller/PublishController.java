@@ -1,9 +1,11 @@
 package com.watch330.community.Controller;
 
+import com.watch330.community.cache.TagCache;
 import com.watch330.community.mapper.QuestionMapper;
 import com.watch330.community.model.Question;
 import com.watch330.community.model.User;
 import com.watch330.community.service.QuestionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +27,8 @@ public class PublishController {
     private QuestionService questionService;
 
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
@@ -39,6 +42,7 @@ public class PublishController {
         model.addAttribute("title", question.getTitle());
         model.addAttribute("description", question.getDescription());
         model.addAttribute("tag", question.getTag());
+        model.addAttribute("tags", TagCache.get());
         request.getSession().setAttribute("questionEditId", id);
 
         return "publish";
@@ -56,6 +60,14 @@ public class PublishController {
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
+        model.addAttribute("tags", TagCache.get());
+
+        User user = (User) request.getSession().getAttribute("user");
+
+        if (user == null) {
+            model.addAttribute("error", "用户未登录");
+            return "publish";
+        }
 
         if (title == null || Objects.equals(title, "")) {
             model.addAttribute("error", "标题不能为空");
@@ -70,12 +82,12 @@ public class PublishController {
             return "publish";
         }
 
-        User user = (User) request.getSession().getAttribute("user");
-
-        if (user == null) {
-            model.addAttribute("error", "用户未登录");
+        String inValidTags = TagCache.isValid(tag);
+        if (StringUtils.isNotBlank(inValidTags)) {
+            model.addAttribute("error", "含有非法标签:" + inValidTags);
             return "publish";
         }
+
 
         Question question = new Question();
         question.setTitle(title);
@@ -84,20 +96,11 @@ public class PublishController {
         question.setCreator(user.getAccountId());
 
 
-       if( questionService.createOrUpdate(question,(Long) request.getSession().getAttribute("questionEditId")))
-           request.getSession().setAttribute("questionEditId",null);
+        if (questionService.createOrUpdate(question, (Long) request.getSession().getAttribute("questionEditId")))
+            request.getSession().setAttribute("questionEditId", null);
 
         return "redirect:/";
     }
 
-
-//    @PostMapping("/publish/{id}")
-//    public String updateQuestion(@PathVariable Integer id,
-//                                 @RequestParam("title") String title,
-//                                 @RequestParam("description") String description,
-//                                 @RequestParam("tag") String tag){
-//        questionMapper.updateQuestion(id,title,description,tag);
-//        return "redirect:/question/" + id;
-//    }
 
 }

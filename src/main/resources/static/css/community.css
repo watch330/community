@@ -164,6 +164,51 @@ body {
 .comment-foot {
     padding-left: 50px;
 }
+
+.tag {
+    margin-top: 5px;
+    margin-right: 11px;
+    font-size: 12px;
+}
+.tag:hover {
+    cursor: pointer;
+}
+.selectTags {
+    border: 1px solid #e3e3e3;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    box-shadow: 1px 1px 5px #dddddd;
+}
+.tags-container {
+    margin-top: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap:wrap;
+}
+
+
+.tag-btn {
+    margin-right: 15px;
+    display: inline-block;
+    block-size: content-box;
+    color:#999;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(243, 243, 243, 0.92);
+}
+
+.tag-btn:hover {
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #1496bd;
+}
+.btn-active {
+    cursor: pointer;
+    background-color: #1496bd;
+    border-radius: 5px;
+    color:#ffffff;
+}
 /*.media hr {*/
 
 /*}*/

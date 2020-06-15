@@ -83,7 +83,7 @@ function secondCommentPost(e) {
     const selector = "#second-comment-input-" + targetId;
     var content = $(selector).val();
 
-    comment(content, targetId, 2,parentId);
+    comment(content, targetId, 2, parentId);
 }
 
 function commentPost() {
@@ -91,7 +91,7 @@ function commentPost() {
     const val = $("#comment").val();
     const type = $("#comment-type").val();
 
-    comment(val, id, type,1);
+    comment(val, id, type, 1);
 }
 
 
@@ -107,16 +107,16 @@ function show2ndComment(id) {
     $("#comment-type").val(2);
 }
 
-function deleteComment(parentId,id, type) {
+function deleteComment(parentId, id, type) {
     $.ajax({
         url: "/deleteComment",
         type: "post",
-        data: {"id": id,"parentId":parentId, "type": type},
+        data: {"id": id, "parentId": parentId, "type": type},
         dataType: "html",
         success: function (data) {
-            if (type==1)
+            if (type == 1)
                 getComment(parentId);
-            else{
+            else {
                 $(".comment-list-container").html($(data).find("#comment-list-container-mark").html());
                 showChildAfterDelete(parentId);
             }
@@ -130,14 +130,14 @@ function showChildAfterDelete(ID) {
     var commentListId = "#comment-" + ID;
     const btn = $(commentListId);
 
-    $("#comment-btn-a"+ID).parent().toggleClass("comment-btn-active");
+    $("#comment-btn-a" + ID).parent().toggleClass("comment-btn-active");
     btn.toggleClass("in");
 }
 
 function showCommentAfterPost(id) {
     const target = "#comment-" + id;
     $(target + " .second-mark").load("/comments .second-ajax-mark", {"id": id});
-    $("#second-comment-input-"+id).val("");
+    $("#second-comment-input-" + id).val("");
 
     // $("#comment-btn-a"+id).parent().toggleClass("comment-btn-active");
     // $(target).toggleClass("in");
@@ -152,4 +152,37 @@ function showChild(e) {
 
     $(e).parent().toggleClass("comment-btn-active");
     btn.toggleClass("in");
+}
+
+function addTags(e) {
+    const value = e.getAttribute("data-tagName");
+    var val = $("#tag").val();
+    var split = val.split(',');
+    if (!split.includes(value)) {
+        if (val) {
+            $("#tag").val(val + ',' + value);
+        } else {
+            $("#tag").val(value);
+        }
+    }else {
+        var index = split.indexOf(value);
+
+    }
+}
+
+function showSelectTags() {
+    $('.selectTags').show();
+    $('#error-alert').hide();
+}
+function hideSelectTags() {
+    $('.selectTags').hide();
+}
+
+function showTags(e){
+    $('.tag-btn').toggleClass('btn-active',false);
+    $(e).toggleClass('btn-active',true);
+    const con = $('.tags-container');
+    con.hide();
+    const type = e.getAttribute("data-tag");
+    $('#tags-'+type).show();
 }

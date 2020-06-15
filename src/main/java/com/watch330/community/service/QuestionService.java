@@ -12,6 +12,7 @@ import com.watch330.community.model.Question;
 import com.watch330.community.model.QuestionExample;
 import com.watch330.community.model.User;
 import com.watch330.community.model.UserExample;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -31,6 +33,25 @@ public class QuestionService {
 
     @Autowired
     private QuestionExtMapper questionExtMapper;
+
+    public List<QuestionDTO> selectRelated(QuestionDTO questionDTO) {
+        if (StringUtils.isBlank(questionDTO.getTag()))
+            return new ArrayList<>();
+
+        Question question = new Question();
+        question.setId(questionDTO.getId());
+        question.setTag(StringUtils.replace(questionDTO.getTag(), ",", "|"));
+        List<Question> relatedQuestions = questionExtMapper.selectRelated(question);
+
+        List<QuestionDTO> questionDTOS = relatedQuestions.stream().map(relatedQuestion -> {
+            QuestionDTO dto = new QuestionDTO();
+            BeanUtils.copyProperties(relatedQuestion, dto);
+            return dto;
+        }).collect(Collectors.toList());
+
+        return questionDTOS;
+    }
+
     /**
      * 获得所有问题的分页.
      *
@@ -40,6 +61,7 @@ public class QuestionService {
      */
     public PageInfo getAllList(Integer pageNum, Integer pageSize) {
         QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_modified desc");
         PageHelper.startPage(pageNum, pageSize);
         List<Question> questions = questionMapper.selectByExample(questionExample);
         return getPageInfo(questions);
@@ -57,6 +79,7 @@ public class QuestionService {
         //使用example设置查询条件
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria().andCreatorEqualTo(id);
+        questionExample.setOrderByClause("gmt_create desc");
 
         PageHelper.startPage(pageNum, pageSize);
         List<Question> questions = questionMapper.selectByExample(questionExample);
