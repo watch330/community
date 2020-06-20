@@ -3,6 +3,7 @@ package com.watch330.community.interceptor;
 import com.watch330.community.mapper.UserMapper;
 import com.watch330.community.model.User;
 import com.watch330.community.model.UserExample;
+import com.watch330.community.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -17,6 +18,9 @@ import java.util.List;
 public class SesstionInterceptor implements HandlerInterceptor {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -33,6 +37,8 @@ public class SesstionInterceptor implements HandlerInterceptor {
                     List<User> users = userMapper.selectByExample(userExample);
                     if (users.size() != 0) {
                         request.getSession().setAttribute("user", users.get(0));
+                        long unRead = notificationService.getUnRead(users.get(0).getId());
+                        request.getSession().setAttribute("unreadNotification",unRead);
                     }
                     break;
                 }

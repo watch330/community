@@ -34,9 +34,4 @@ public class NotificationController {
             return "redirect:/";
     }
 
-    @RequestMapping(value = "/getNotificationUnread",method = RequestMethod.GET)
-    @ResponseBody
-    public Long getNotificationUnread(@RequestParam(name = "Id") Long id){
-        return notificationService.getUnRead(id);
-    }
 }
