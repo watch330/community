@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="css/community.css"/>
     <script src="js/jquery-3.4.1.min.js" type="application/javascript"></script>
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="js/comment.js" type="text/javascript"></script>
     <script th:replace="common/pageNavi :: nav-script (${path})"></script>
+    <script th:replace="common/navigation :: notification (${session.user.id})"></script>
     <script type="application/javascript">
-        window.onload=function () {
+        window.onload = function () {
             var closeable = window.localStorage.getItem("closeable");
-            if(closeable=="true"){
-                window.localStorage.setItem("loginDone",true);
+            if (closeable == "true") {
+                window.localStorage.setItem("loginDone", true);
                 window.close();
                 window.localStorage.removeItem("closeable");
             }
@@ -24,7 +26,6 @@
 <body>
 
 <header th:insert="common/navigation :: nav-bar"></header>
-
 
 <div class="container-fluid main ">
     <div class="row">

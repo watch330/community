@@ -186,3 +186,16 @@ function showTags(e){
     const type = e.getAttribute("data-tag");
     $('#tags-'+type).show();
 }
+
+function showNotificationUnread(id) {
+    $.ajax({
+        url: "/getNotificationUnread",
+        type: "get",
+        data: {"Id": id},
+        success: function (data) {
+            $('.unread-notifi-container').html(data);
+        },
+        dataType: "json",
+        contentType: "application/json"
+    });
+}

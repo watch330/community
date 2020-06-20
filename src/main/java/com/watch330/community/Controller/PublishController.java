@@ -93,7 +93,7 @@ public class PublishController {
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
-        question.setCreator(user.getAccountId());
+        question.setCreator(user.getId());
 
 
         if (questionService.createOrUpdate(question, (Long) request.getSession().getAttribute("questionEditId")))

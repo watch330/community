@@ -209,6 +209,16 @@ body {
     border-radius: 5px;
     color:#ffffff;
 }
+
+.notification-container{
+    font-size: 15px;
+    padding:10px;
+}
+
+.notification-read-status {
+    margin-left: 20px;
+    background-color: #3498db;
+}
 /*.media hr {*/
 
 /*}*/

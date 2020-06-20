@@ -75,7 +75,7 @@ public class QuestionService {
      * @param id       用户ID
      * @return
      */
-    public PageInfo getListByUserId(Integer pageNum, Integer pageSize, String id) {
+    public PageInfo getListByUserId(Integer pageNum, Integer pageSize, Long id) {
         //使用example设置查询条件
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria().andCreatorEqualTo(id);
@@ -93,7 +93,7 @@ public class QuestionService {
         for (Question question : questions) {
             UserExample userExample = new UserExample();
             userExample.createCriteria()
-                    .andAccountIdEqualTo(question.getCreator());
+                    .andIdEqualTo(question.getCreator());
             List<User> users = userMapper.selectByExample(userExample);
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
@@ -118,7 +118,7 @@ public class QuestionService {
         }
         UserExample userExample = new UserExample();
         userExample.createCriteria()
-                .andAccountIdEqualTo(question.getCreator());
+                .andIdEqualTo(question.getCreator());
         List<User> users = userMapper.selectByExample(userExample);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);

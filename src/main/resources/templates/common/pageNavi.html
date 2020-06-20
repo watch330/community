@@ -36,7 +36,7 @@
         </div>
         <div class="media-body">
             <h4 class="media-heading">
-                <a th:href="@{'question/'+${question.getId()}}"  th:text="${question.title}" style="text-decoration: none"></a>
+                <a th:href="@{'/question/'+${question.getId()}}"  th:text="${question.title}" style="text-decoration: none"></a>
             </h4>
             <span class="article-status"><span th:text="${question.commentCount}"></span>个回复 · <span
                     th:text="${question.viewCount}"></span> 次浏览 · <span
