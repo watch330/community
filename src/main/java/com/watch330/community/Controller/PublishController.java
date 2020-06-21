@@ -37,8 +37,8 @@ public class PublishController {
                                  HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         Question question = questionMapper.selectByPrimaryKey(id);
-        if (!Objects.equals(user.getAccountId(), question.getCreator()))
-            return "index";
+        if (!Objects.equals(user.getId(), question.getCreator()))
+            return "redirect:/";
         model.addAttribute("title", question.getTitle());
         model.addAttribute("description", question.getDescription());
         model.addAttribute("tag", question.getTag());
